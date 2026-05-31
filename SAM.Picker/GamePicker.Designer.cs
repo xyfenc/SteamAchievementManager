@@ -1,4 +1,4 @@
-﻿namespace SAM.Picker
+namespace SAM.Picker
 {
     partial class GamePicker
     {
@@ -29,257 +29,329 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ToolStripSeparator _ToolStripSeparator1;
-            System.Windows.Forms.ToolStripSeparator _ToolStripSeparator2;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GamePicker));
-            this._LogoImageList = new System.Windows.Forms.ImageList(this.components);
-            this._CallbackTimer = new System.Windows.Forms.Timer(this.components);
-            this._PickerToolStrip = new System.Windows.Forms.ToolStrip();
-            this._RefreshGamesButton = new System.Windows.Forms.ToolStripButton();
-            this._AddGameTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this._AddGameButton = new System.Windows.Forms.ToolStripButton();
-            this._FindGamesLabel = new System.Windows.Forms.ToolStripLabel();
-            this._SearchGameTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this._FilterDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this._FilterGamesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this._FilterDemosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this._FilterModsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this._FilterJunkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this._GameListView = new SAM.Picker.MyListView();
-            this._PickerStatusStrip = new System.Windows.Forms.StatusStrip();
-            this._PickerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this._DownloadStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this._LogoWorker = new System.ComponentModel.BackgroundWorker();
-            this._ListWorker = new System.ComponentModel.BackgroundWorker();
-            _ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            _ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this._PickerToolStrip.SuspendLayout();
-            this._PickerStatusStrip.SuspendLayout();
+
+            // ---- Non-visual components ----
+            this._LogoImageList  = new System.Windows.Forms.ImageList(this.components);
+            this._CallbackTimer  = new System.Windows.Forms.Timer(this.components);
+            this._LogoWorker     = new System.ComponentModel.BackgroundWorker();
+            this._ListWorker     = new System.ComponentModel.BackgroundWorker();
+
+            // ---- Header panel children ----
+            this._AddGameTextBox       = new System.Windows.Forms.TextBox();
+            this._AddGameButton        = new System.Windows.Forms.Button();
+            this._SearchGameTextBox    = new System.Windows.Forms.TextBox();
+            this._RefreshGamesButton   = new System.Windows.Forms.Button();
+
+            // ---- Filter panel ----
+            this._FilterPanel          = new System.Windows.Forms.Panel();
+            this._FilterStrip          = new System.Windows.Forms.ToolStrip();
+            this._FilterGamesButton    = new System.Windows.Forms.ToolStripButton();
+            this._FilterDemosButton    = new System.Windows.Forms.ToolStripButton();
+            this._FilterModsButton     = new System.Windows.Forms.ToolStripButton();
+            this._FilterJunkButton     = new System.Windows.Forms.ToolStripButton();
+
+            // ---- Header panel (created after children so children can be added) ----
+            this._HeaderPanel          = new System.Windows.Forms.Panel();
+
+            // ---- Game list ----
+            this._GameListView         = new SAM.Picker.MyListView();
+
+            // ---- Status panel ----
+            this._StatusPanel          = new System.Windows.Forms.Panel();
+            this._PickerStatusLabel    = new System.Windows.Forms.Label();
+            this._DownloadStatusLabel  = new System.Windows.Forms.Label();
+
+            this._HeaderPanel.SuspendLayout();
+            this._FilterPanel.SuspendLayout();
+            this._FilterStrip.SuspendLayout();
+            this._StatusPanel.SuspendLayout();
             this.SuspendLayout();
-            //
-            // _ToolStripSeparator1
-            //
-            _ToolStripSeparator1.Name = "_ToolStripSeparator1";
-            _ToolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            //
-            // _ToolStripSeparator2
-            //
-            _ToolStripSeparator2.Name = "_ToolStripSeparator2";
-            _ToolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            //
+
+            // =========================================================
             // _LogoImageList
-            //
-            this._LogoImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this._LogoImageList.ImageSize = new System.Drawing.Size(184, 69);
-            this._LogoImageList.TransparentColor = System.Drawing.Color.Transparent;
-            //
+            // =========================================================
+            this._LogoImageList.ColorDepth       = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this._LogoImageList.ImageSize         = new System.Drawing.Size(184, 69);
+            this._LogoImageList.TransparentColor  = System.Drawing.Color.Transparent;
+
+            // =========================================================
             // _CallbackTimer
-            //
+            // =========================================================
             this._CallbackTimer.Enabled = true;
-            this._CallbackTimer.Tick += new System.EventHandler(this.OnTimer);
-            //
-            // _PickerToolStrip
-            //
-            this._PickerToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._RefreshGamesButton,
-            _ToolStripSeparator1,
-            this._AddGameTextBox,
-            this._AddGameButton,
-            _ToolStripSeparator2,
-            this._FindGamesLabel,
-            this._SearchGameTextBox,
-            this._FilterDropDownButton});
-            this._PickerToolStrip.Location = new System.Drawing.Point(0, 0);
-            this._PickerToolStrip.Name = "_PickerToolStrip";
-            this._PickerToolStrip.Size = new System.Drawing.Size(742, 25);
-            this._PickerToolStrip.TabIndex = 1;
-            this._PickerToolStrip.Text = "toolStrip1";
-            //
-            // _RefreshGamesButton
-            //
-            this._RefreshGamesButton.Image = global::SAM.Picker.Resources.Refresh;
-            this._RefreshGamesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._RefreshGamesButton.Name = "_RefreshGamesButton";
-            this._RefreshGamesButton.Size = new System.Drawing.Size(105, 22);
-            this._RefreshGamesButton.Text = "Refresh Games";
-            this._RefreshGamesButton.Click += new System.EventHandler(this.OnRefresh);
-            //
-            // _AddGameTextBox
-            //
-            this._AddGameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._AddGameTextBox.Name = "_AddGameTextBox";
-            this._AddGameTextBox.Size = new System.Drawing.Size(100, 25);
-            //
-            // _AddGameButton
-            //
-            this._AddGameButton.Image = global::SAM.Picker.Resources.Search;
-            this._AddGameButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._AddGameButton.Name = "_AddGameButton";
-            this._AddGameButton.Size = new System.Drawing.Size(83, 22);
-            this._AddGameButton.Text = "Add Game";
-            this._AddGameButton.Click += new System.EventHandler(this.OnAddGame);
-            //
-            // _FindGamesLabel
-            //
-            this._FindGamesLabel.Name = "_FindGamesLabel";
-            this._FindGamesLabel.Size = new System.Drawing.Size(33, 22);
-            this._FindGamesLabel.Text = "Filter";
-            //
-            // _SearchGameTextBox
-            //
-            this._SearchGameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this._SearchGameTextBox.Name = "_SearchGameTextBox";
-            this._SearchGameTextBox.Size = new System.Drawing.Size(100, 25);
-            this._SearchGameTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnFilterUpdate);
-            //
-            // _FilterDropDownButton
-            //
-            this._FilterDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this._FilterDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._FilterGamesMenuItem,
-            this._FilterDemosMenuItem,
-            this._FilterModsMenuItem,
-            this._FilterJunkMenuItem});
-            this._FilterDropDownButton.Image = global::SAM.Picker.Resources.Filter;
-            this._FilterDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._FilterDropDownButton.Name = "_FilterDropDownButton";
-            this._FilterDropDownButton.Size = new System.Drawing.Size(29, 22);
-            this._FilterDropDownButton.Text = "Game filtering";
-            //
-            // _FilterGamesMenuItem
-            //
-            this._FilterGamesMenuItem.Checked = true;
-            this._FilterGamesMenuItem.CheckOnClick = true;
-            this._FilterGamesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this._FilterGamesMenuItem.Name = "_FilterGamesMenuItem";
-            this._FilterGamesMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterGamesMenuItem.Text = "Show &games";
-            this._FilterGamesMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
-            //
-            // _FilterDemosMenuItem
-            //
-            this._FilterDemosMenuItem.CheckOnClick = true;
-            this._FilterDemosMenuItem.Name = "_FilterDemosMenuItem";
-            this._FilterDemosMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterDemosMenuItem.Text = "Show &demos";
-            this._FilterDemosMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
-            //
-            // _FilterModsMenuItem
-            //
-            this._FilterModsMenuItem.CheckOnClick = true;
-            this._FilterModsMenuItem.Name = "_FilterModsMenuItem";
-            this._FilterModsMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterModsMenuItem.Text = "Show &mods";
-            this._FilterModsMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
-            //
-            // _FilterJunkMenuItem
-            //
-            this._FilterJunkMenuItem.CheckOnClick = true;
-            this._FilterJunkMenuItem.Name = "_FilterJunkMenuItem";
-            this._FilterJunkMenuItem.Size = new System.Drawing.Size(180, 22);
-            this._FilterJunkMenuItem.Text = "Show &junk";
-            this._FilterJunkMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
-            //
-            // _GameListView
-            //
-            this._GameListView.BackColor = System.Drawing.Color.Black;
-            this._GameListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._GameListView.ForeColor = System.Drawing.Color.White;
-            this._GameListView.HideSelection = false;
-            this._GameListView.LargeImageList = this._LogoImageList;
-            this._GameListView.Location = new System.Drawing.Point(0, 25);
-            this._GameListView.MultiSelect = false;
-            this._GameListView.Name = "_GameListView";
-            this._GameListView.OwnerDraw = true;
-            this._GameListView.Size = new System.Drawing.Size(742, 245);
-            this._GameListView.SmallImageList = this._LogoImageList;
-            this._GameListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this._GameListView.TabIndex = 0;
-            this._GameListView.TileSize = new System.Drawing.Size(184, 69);
-            this._GameListView.UseCompatibleStateImageBehavior = false;
-            this._GameListView.VirtualMode = true;
-            this._GameListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
-            this._GameListView.ItemActivate += new System.EventHandler(this.OnActivateGame);
-            this._GameListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnGameListViewRetrieveVirtualItem);
-            this._GameListView.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.OnGameListViewSearchForVirtualItem);
-            //
-            // _PickerStatusStrip
-            //
-            this._PickerStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._PickerStatusLabel,
-            this._DownloadStatusLabel});
-            this._PickerStatusStrip.Location = new System.Drawing.Point(0, 270);
-            this._PickerStatusStrip.Name = "_PickerStatusStrip";
-            this._PickerStatusStrip.Size = new System.Drawing.Size(742, 22);
-            this._PickerStatusStrip.TabIndex = 2;
-            this._PickerStatusStrip.Text = "statusStrip";
-            //
-            // _PickerStatusLabel
-            //
-            this._PickerStatusLabel.Name = "_PickerStatusLabel";
-            this._PickerStatusLabel.Size = new System.Drawing.Size(727, 17);
-            this._PickerStatusLabel.Spring = true;
-            this._PickerStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
-            // _DownloadStatusLabel
-            //
-            this._DownloadStatusLabel.Image = global::SAM.Picker.Resources.Download;
-            this._DownloadStatusLabel.Name = "_DownloadStatusLabel";
-            this._DownloadStatusLabel.Size = new System.Drawing.Size(111, 17);
-            this._DownloadStatusLabel.Text = "Download status";
-            this._DownloadStatusLabel.Visible = false;
-            //
-            // _LogoWorker
-            //
+            this._CallbackTimer.Tick   += new System.EventHandler(this.OnTimer);
+
+            // =========================================================
+            // _LogoWorker / _ListWorker
+            // =========================================================
             this._LogoWorker.WorkerSupportsCancellation = true;
-            this._LogoWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadLogo);
-            this._LogoWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnDownloadLogo);
-            //
-            // _ListWorker
-            //
+            this._LogoWorker.DoWork              += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadLogo);
+            this._LogoWorker.RunWorkerCompleted  += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnDownloadLogo);
+
             this._ListWorker.WorkerSupportsCancellation = true;
-            this._ListWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadList);
-            this._ListWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnDownloadList);
-            //
-            // GamePicker
-            //
+            this._ListWorker.DoWork              += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadList);
+            this._ListWorker.RunWorkerCompleted  += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnDownloadList);
+
+            // =========================================================
+            // _AddGameTextBox  (game ID input, left side of header)
+            // =========================================================
+            this._AddGameTextBox.BackColor    = SAM.Picker.Theme.AppTheme.BgElevated;
+            this._AddGameTextBox.ForeColor    = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._AddGameTextBox.BorderStyle  = System.Windows.Forms.BorderStyle.None;
+            this._AddGameTextBox.Font         = SAM.Picker.Theme.AppTheme.FontBase;
+            this._AddGameTextBox.Location     = new System.Drawing.Point(158, 22);
+            this._AddGameTextBox.Size         = new System.Drawing.Size(108, 20);
+            this._AddGameTextBox.Name         = "_AddGameTextBox";
+            this._AddGameTextBox.TabIndex     = 0;
+
+            // =========================================================
+            // _AddGameButton  (secondary outline button)
+            // =========================================================
+            this._AddGameButton.BackColor                            = SAM.Picker.Theme.AppTheme.BgElevated;
+            this._AddGameButton.FlatStyle                           = System.Windows.Forms.FlatStyle.Flat;
+            this._AddGameButton.FlatAppearance.BorderSize           = 1;
+            this._AddGameButton.FlatAppearance.BorderColor          = SAM.Picker.Theme.AppTheme.AccentPrimary;
+            this._AddGameButton.FlatAppearance.MouseOverBackColor   = SAM.Picker.Theme.AppTheme.BgHover;
+            this._AddGameButton.FlatAppearance.MouseDownBackColor   = SAM.Picker.Theme.AppTheme.BgSelected;
+            this._AddGameButton.ForeColor                           = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._AddGameButton.Font                                = SAM.Picker.Theme.AppTheme.FontSemibold;
+            this._AddGameButton.Location                            = new System.Drawing.Point(274, 14);
+            this._AddGameButton.Size                                = new System.Drawing.Size(100, 30);
+            this._AddGameButton.Name                                = "_AddGameButton";
+            this._AddGameButton.Text                                = "Add Game";
+            this._AddGameButton.UseVisualStyleBackColor             = false;
+            this._AddGameButton.TabIndex                            = 1;
+            this._AddGameButton.Click                              += new System.EventHandler(this.OnAddGame);
+
+            // =========================================================
+            // _SearchGameTextBox  (search field, anchored, fills center)
+            // =========================================================
+            this._SearchGameTextBox.Anchor       = System.Windows.Forms.AnchorStyles.Top
+                                                   | System.Windows.Forms.AnchorStyles.Left
+                                                   | System.Windows.Forms.AnchorStyles.Right;
+            this._SearchGameTextBox.BackColor    = SAM.Picker.Theme.AppTheme.BgElevated;
+            this._SearchGameTextBox.ForeColor    = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._SearchGameTextBox.BorderStyle  = System.Windows.Forms.BorderStyle.None;
+            this._SearchGameTextBox.Font         = SAM.Picker.Theme.AppTheme.FontBase;
+            this._SearchGameTextBox.Location     = new System.Drawing.Point(392, 22);
+            this._SearchGameTextBox.Size         = new System.Drawing.Size(410, 20);
+            this._SearchGameTextBox.Name         = "_SearchGameTextBox";
+            this._SearchGameTextBox.TabIndex     = 2;
+            this._SearchGameTextBox.KeyUp       += new System.Windows.Forms.KeyEventHandler(this.OnFilterUpdate);
+
+            // =========================================================
+            // _RefreshGamesButton  (primary violet button, right)
+            // =========================================================
+            this._RefreshGamesButton.Anchor                          = System.Windows.Forms.AnchorStyles.Top
+                                                                      | System.Windows.Forms.AnchorStyles.Right;
+            this._RefreshGamesButton.BackColor                       = SAM.Picker.Theme.AppTheme.AccentPrimary;
+            this._RefreshGamesButton.FlatStyle                      = System.Windows.Forms.FlatStyle.Flat;
+            this._RefreshGamesButton.FlatAppearance.BorderSize      = 0;
+            this._RefreshGamesButton.FlatAppearance.MouseOverBackColor = SAM.Picker.Theme.AppTheme.AccentHover;
+            this._RefreshGamesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(0xFF, 0x6D, 0x28, 0xD9);
+            this._RefreshGamesButton.ForeColor                      = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._RefreshGamesButton.Font                           = SAM.Picker.Theme.AppTheme.FontSemibold;
+            this._RefreshGamesButton.Location                       = new System.Drawing.Point(816, 14);
+            this._RefreshGamesButton.Size                           = new System.Drawing.Size(132, 30);
+            this._RefreshGamesButton.Name                           = "_RefreshGamesButton";
+            this._RefreshGamesButton.Text                           = "Refresh Library";
+            this._RefreshGamesButton.UseVisualStyleBackColor        = false;
+            this._RefreshGamesButton.TabIndex                       = 3;
+            this._RefreshGamesButton.Click                         += new System.EventHandler(this.OnRefresh);
+
+            // =========================================================
+            // _HeaderPanel  (64px frosted glass header, painted custom)
+            // =========================================================
+            this._HeaderPanel.Dock      = System.Windows.Forms.DockStyle.Top;
+            this._HeaderPanel.Size      = new System.Drawing.Size(960, 64);
+            this._HeaderPanel.BackColor = SAM.Picker.Theme.AppTheme.BgPanel;
+            this._HeaderPanel.Name      = "_HeaderPanel";
+            this._HeaderPanel.Controls.Add(this._RefreshGamesButton);
+            this._HeaderPanel.Controls.Add(this._SearchGameTextBox);
+            this._HeaderPanel.Controls.Add(this._AddGameButton);
+            this._HeaderPanel.Controls.Add(this._AddGameTextBox);
+            this._HeaderPanel.Paint    += new System.Windows.Forms.PaintEventHandler(this.OnHeaderPanelPaint);
+
+            // =========================================================
+            // _FilterStrip  (inside filter panel, holds chip buttons)
+            // =========================================================
+            this._FilterStrip.BackColor  = SAM.Picker.Theme.AppTheme.BgSurface;
+            this._FilterStrip.Dock       = System.Windows.Forms.DockStyle.Fill;
+            this._FilterStrip.GripStyle  = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this._FilterStrip.Renderer   = new SAM.Picker.Theme.DarkToolStripRenderer();
+            this._FilterStrip.Name       = "_FilterStrip";
+            this._FilterStrip.Padding    = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this._FilterStrip.TabIndex   = 0;
+            this._FilterStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this._FilterGamesButton,
+                this._FilterDemosButton,
+                this._FilterModsButton,
+                this._FilterJunkButton,
+            });
+
+            // ---- Filter chip buttons ----
+            this._FilterGamesButton.CheckOnClick    = true;
+            this._FilterGamesButton.Checked         = true;
+            this._FilterGamesButton.CheckState      = System.Windows.Forms.CheckState.Checked;
+            this._FilterGamesButton.DisplayStyle    = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._FilterGamesButton.Font            = SAM.Picker.Theme.AppTheme.FontBase;
+            this._FilterGamesButton.ForeColor       = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._FilterGamesButton.Name            = "_FilterGamesButton";
+            this._FilterGamesButton.Text            = "Games";
+            this._FilterGamesButton.Padding         = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this._FilterGamesButton.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
+
+            this._FilterDemosButton.CheckOnClick    = true;
+            this._FilterDemosButton.DisplayStyle    = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._FilterDemosButton.Font            = SAM.Picker.Theme.AppTheme.FontBase;
+            this._FilterDemosButton.ForeColor       = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._FilterDemosButton.Name            = "_FilterDemosButton";
+            this._FilterDemosButton.Text            = "Demos";
+            this._FilterDemosButton.Padding         = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this._FilterDemosButton.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
+
+            this._FilterModsButton.CheckOnClick    = true;
+            this._FilterModsButton.DisplayStyle    = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._FilterModsButton.Font            = SAM.Picker.Theme.AppTheme.FontBase;
+            this._FilterModsButton.ForeColor       = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._FilterModsButton.Name            = "_FilterModsButton";
+            this._FilterModsButton.Text            = "Mods";
+            this._FilterModsButton.Padding         = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this._FilterModsButton.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
+
+            this._FilterJunkButton.CheckOnClick    = true;
+            this._FilterJunkButton.DisplayStyle    = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._FilterJunkButton.Font            = SAM.Picker.Theme.AppTheme.FontBase;
+            this._FilterJunkButton.ForeColor       = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._FilterJunkButton.Name            = "_FilterJunkButton";
+            this._FilterJunkButton.Text            = "Junk";
+            this._FilterJunkButton.Padding         = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this._FilterJunkButton.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
+
+            // =========================================================
+            // _FilterPanel  (40px sub-header for filter chips)
+            // =========================================================
+            this._FilterPanel.Dock      = System.Windows.Forms.DockStyle.Top;
+            this._FilterPanel.Height    = 40;
+            this._FilterPanel.BackColor = SAM.Picker.Theme.AppTheme.BgSurface;
+            this._FilterPanel.Name      = "_FilterPanel";
+            this._FilterPanel.Controls.Add(this._FilterStrip);
+
+            // =========================================================
+            // _GameListView  (Details view, full-width card rows)
+            // =========================================================
+            this._GameListView.BackColor             = SAM.Picker.Theme.AppTheme.BgDeep;
+            this._GameListView.ForeColor             = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this._GameListView.Dock                  = System.Windows.Forms.DockStyle.Fill;
+            this._GameListView.HideSelection         = false;
+            this._GameListView.LargeImageList        = this._LogoImageList;
+            this._GameListView.MultiSelect           = false;
+            this._GameListView.Name                  = "_GameListView";
+            this._GameListView.OwnerDraw             = true;
+            this._GameListView.Sorting               = System.Windows.Forms.SortOrder.Ascending;
+            this._GameListView.UseCompatibleStateImageBehavior = false;
+            this._GameListView.VirtualMode           = true;
+            this._GameListView.BorderStyle           = System.Windows.Forms.BorderStyle.None;
+            this._GameListView.View                  = System.Windows.Forms.View.Details;
+            this._GameListView.HeaderStyle           = System.Windows.Forms.ColumnHeaderStyle.None;
+            this._GameListView.TabIndex              = 0;
+            // One full-width phantom column — width set dynamically in code
+            this._GameListView.Columns.Add(new System.Windows.Forms.ColumnHeader { Text = string.Empty, Width = 860 });
+            this._GameListView.DrawItem             += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
+            this._GameListView.DrawSubItem          += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.OnGameListViewDrawSubItem);
+            this._GameListView.DrawColumnHeader     += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.OnGameListViewDrawColumnHeader);
+            this._GameListView.ItemActivate         += new System.EventHandler(this.OnActivateGame);
+            this._GameListView.RetrieveVirtualItem  += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnGameListViewRetrieveVirtualItem);
+            this._GameListView.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.OnGameListViewSearchForVirtualItem);
+            this._GameListView.SizeChanged          += new System.EventHandler(this.OnListViewSizeChanged);
+
+            // =========================================================
+            // _PickerStatusLabel / _DownloadStatusLabel  (inside status panel)
+            // =========================================================
+            this._PickerStatusLabel.Dock        = System.Windows.Forms.DockStyle.Fill;
+            this._PickerStatusLabel.ForeColor   = SAM.Picker.Theme.AppTheme.TextSecondary;
+            this._PickerStatusLabel.Font        = SAM.Picker.Theme.AppTheme.FontSmall;
+            this._PickerStatusLabel.TextAlign   = System.Drawing.ContentAlignment.MiddleLeft;
+            this._PickerStatusLabel.Padding     = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this._PickerStatusLabel.Name        = "_PickerStatusLabel";
+            this._PickerStatusLabel.TabIndex    = 0;
+
+            this._DownloadStatusLabel.Anchor    = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this._DownloadStatusLabel.ForeColor = SAM.Picker.Theme.AppTheme.AccentSecondary;
+            this._DownloadStatusLabel.Font      = SAM.Picker.Theme.AppTheme.FontSmall;
+            this._DownloadStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this._DownloadStatusLabel.Location  = new System.Drawing.Point(620, 0);
+            this._DownloadStatusLabel.Size      = new System.Drawing.Size(240, 28);
+            this._DownloadStatusLabel.Name      = "_DownloadStatusLabel";
+            this._DownloadStatusLabel.Visible   = false;
+            this._DownloadStatusLabel.TabIndex  = 1;
+
+            // =========================================================
+            // _StatusPanel  (28px footer bar)
+            // =========================================================
+            this._StatusPanel.Dock      = System.Windows.Forms.DockStyle.Bottom;
+            this._StatusPanel.Height    = 28;
+            this._StatusPanel.BackColor = SAM.Picker.Theme.AppTheme.BgPanel;
+            this._StatusPanel.Name      = "_StatusPanel";
+            this._StatusPanel.Controls.Add(this._DownloadStatusLabel);
+            this._StatusPanel.Controls.Add(this._PickerStatusLabel);
+            this._StatusPanel.Paint    += new System.Windows.Forms.PaintEventHandler(this.OnStatusPanelPaint);
+
+            // =========================================================
+            // GamePicker form
+            // =========================================================
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(742, 292);
+            this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize          = new System.Drawing.Size(960, 680);
+            this.MinimumSize         = new System.Drawing.Size(760, 520);
+            // Docking order: Fill first, then Bottom, then Top panels (last added = topmost)
             this.Controls.Add(this._GameListView);
-            this.Controls.Add(this._PickerStatusStrip);
-            this.Controls.Add(this._PickerToolStrip);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "GamePicker";
-            this.Text = "Steam Achievement Manager 7.0 | Pick a game... Any game...";
-            this._PickerToolStrip.ResumeLayout(false);
-            this._PickerToolStrip.PerformLayout();
-            this._PickerStatusStrip.ResumeLayout(false);
-            this._PickerStatusStrip.PerformLayout();
+            this.Controls.Add(this._StatusPanel);
+            this.Controls.Add(this._FilterPanel);
+            this.Controls.Add(this._HeaderPanel);
+            this.Icon            = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name            = "GamePicker";
+            this.Text            = "SAM - Steam Achievement Manager";
+            this.BackColor       = SAM.Picker.Theme.AppTheme.BgDeep;
+            this.ForeColor       = SAM.Picker.Theme.AppTheme.TextPrimary;
+            this.Load           += new System.EventHandler(this.OnFormLoad);
+
+            this._HeaderPanel.ResumeLayout(false);
+            this._FilterPanel.ResumeLayout(false);
+            this._FilterStrip.ResumeLayout(false);
+            this._FilterStrip.PerformLayout();
+            this._StatusPanel.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
 
-        private MyListView _GameListView;
-        private System.Windows.Forms.ImageList _LogoImageList;
-        private System.Windows.Forms.Timer _CallbackTimer;
-        private System.Windows.Forms.ToolStrip _PickerToolStrip;
-        private System.Windows.Forms.ToolStripButton _RefreshGamesButton;
-        private System.Windows.Forms.ToolStripTextBox _AddGameTextBox;
-        private System.Windows.Forms.ToolStripButton _AddGameButton;
-        private System.Windows.Forms.ToolStripDropDownButton _FilterDropDownButton;
-        private System.Windows.Forms.ToolStripMenuItem _FilterGamesMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem _FilterJunkMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem _FilterDemosMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem _FilterModsMenuItem;
-        private System.Windows.Forms.StatusStrip _PickerStatusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel _DownloadStatusLabel;
-        private System.Windows.Forms.ToolStripStatusLabel _PickerStatusLabel;
+        #endregion
+
+        // ---- Non-visual ----
+        private SAM.Picker.MyListView              _GameListView;
+        private System.Windows.Forms.ImageList     _LogoImageList;
+        private System.Windows.Forms.Timer         _CallbackTimer;
         private System.ComponentModel.BackgroundWorker _LogoWorker;
         private System.ComponentModel.BackgroundWorker _ListWorker;
-        private System.Windows.Forms.ToolStripTextBox _SearchGameTextBox;
-        private System.Windows.Forms.ToolStripLabel _FindGamesLabel;
 
-        #endregion
+        // ---- Header panel ----
+        private System.Windows.Forms.Panel         _HeaderPanel;
+        private System.Windows.Forms.TextBox       _AddGameTextBox;
+        private System.Windows.Forms.Button        _AddGameButton;
+        private System.Windows.Forms.TextBox       _SearchGameTextBox;
+        private System.Windows.Forms.Button        _RefreshGamesButton;
+
+        // ---- Filter panel ----
+        private System.Windows.Forms.Panel         _FilterPanel;
+        private System.Windows.Forms.ToolStrip     _FilterStrip;
+        private System.Windows.Forms.ToolStripButton _FilterGamesButton;
+        private System.Windows.Forms.ToolStripButton _FilterDemosButton;
+        private System.Windows.Forms.ToolStripButton _FilterModsButton;
+        private System.Windows.Forms.ToolStripButton _FilterJunkButton;
+
+        // ---- Status panel ----
+        private System.Windows.Forms.Panel         _StatusPanel;
+        private System.Windows.Forms.Label         _PickerStatusLabel;
+        private System.Windows.Forms.Label         _DownloadStatusLabel;
     }
 }

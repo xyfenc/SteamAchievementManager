@@ -26,12 +26,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using SAM.Picker.Theme;
 using static SAM.Picker.InvariantShorthand;
 using APITypes = SAM.API.Types;
 
@@ -62,10 +65,11 @@ namespace SAM.Picker
 
             this.InitializeComponent();
 
+            // Placeholder tile used before the real capsule art downloads
             Bitmap blank = new(this._LogoImageList.ImageSize.Width, this._LogoImageList.ImageSize.Height);
             using (var g = Graphics.FromImage(blank))
             {
-                g.Clear(Color.DimGray);
+                g.Clear(AppTheme.BgSurface);
             }
 
             this._LogoImageList.Images.Add("Blank", blank);
@@ -149,10 +153,10 @@ namespace SAM.Picker
                 ? this._SearchGameTextBox.Text
                 : null;
 
-            var wantNormals = this._FilterGamesMenuItem.Checked == true;
-            var wantDemos = this._FilterDemosMenuItem.Checked == true;
-            var wantMods = this._FilterModsMenuItem.Checked == true;
-            var wantJunk = this._FilterJunkMenuItem.Checked == true;
+            var wantNormals = this._FilterGamesButton.Checked == true;
+            var wantDemos = this._FilterDemosButton.Checked == true;
+            var wantMods = this._FilterModsButton.Checked == true;
+            var wantJunk = this._FilterJunkButton.Checked == true;
 
             this._FilteredGames.Clear();
             foreach (var info in this._Games.Values.OrderBy(gi => gi.Name))
@@ -437,8 +441,11 @@ namespace SAM.Picker
 
         private void OnActivateGame(object sender, EventArgs e)
         {
-            var focusedItem = (sender as MyListView)?.FocusedItem;
-            var index = focusedItem != null ? focusedItem.Index : -1;
+            if (this._GameListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+            var index = this._GameListView.SelectedIndices[0];
             if (index < 0 || index >= this._FilteredGames.Count)
             {
                 return;
@@ -501,7 +508,7 @@ namespace SAM.Picker
             this._AddGameTextBox.Text = "";
             this._Games.Clear();
             this.AddGame(id, "normal");
-            this._FilterGamesMenuItem.Checked = true;
+            this._FilterGamesButton.Checked = true;
             this.RefreshGames();
             this.DownloadNextLogo();
         }
@@ -516,8 +523,6 @@ namespace SAM.Picker
 
         private void OnGameListViewDrawItem(object sender, DrawListViewItemEventArgs e)
         {
-            e.DrawDefault = true;
-
             if (e.Item.Bounds.IntersectsWith(this._GameListView.ClientRectangle) == false)
             {
                 return;
@@ -528,6 +533,217 @@ namespace SAM.Picker
             {
                 this.AddGameToLogoQueue(info);
                 this.DownloadNextLogo();
+            }
+
+            DrawGameTile(e, info);
+        }
+
+        /// <summary>
+        /// Custom owner-draw rendering for a single game tile in the ListView.
+        /// Paints a dark background, game capsule art, a glass gradient overlay,
+        /// and the game name in the foreground.
+        /// </summary>
+        private static void DrawGameTile(DrawListViewItemEventArgs e, GameInfo info)
+        {
+            var g      = e.Graphics;
+            var bounds = e.Bounds;
+
+            g.SmoothingMode     = SmoothingMode.AntiAlias;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            // 1. Background
+            Color bgColor;
+            if (e.Item.Selected)
+            {
+                bgColor = AppTheme.BgSelected;
+            }
+            else if ((e.State & ListViewItemStates.Hot) != 0)
+            {
+                bgColor = AppTheme.BgHover;
+            }
+            else
+            {
+                bgColor = e.ItemIndex % 2 == 0 ? AppTheme.BgSurface : AppTheme.BgDeep;
+            }
+
+            using (var bgBrush = new SolidBrush(bgColor))
+            {
+                g.FillRectangle(bgBrush, bounds);
+            }
+
+            // 2. Accent left border on selected
+            if (e.Item.Selected)
+            {
+                using (var accentBrush = new SolidBrush(AppTheme.AccentPrimary))
+                {
+                    g.FillRectangle(accentBrush, bounds.Left, bounds.Top, 3, bounds.Height);
+                }
+            }
+
+            // 3. Game capsule image
+            const int ImagePadding = 4;
+            int imageH = bounds.Height - ImagePadding * 2;
+            int imageW = (int)(imageH * (184.0 / 69.0)); // keep capsule aspect ratio
+            var imageRect = new Rectangle(bounds.Left + 8, bounds.Top + ImagePadding, imageW, imageH);
+
+            var imageList = (e.Item.ListView as ListView)?.LargeImageList;
+            if (imageList != null && e.Item.ImageIndex >= 0 && e.Item.ImageIndex < imageList.Images.Count)
+            {
+                var img = imageList.Images[e.Item.ImageIndex];
+                if (img != null)
+                {
+                    // Clip to rounded rectangle for the image
+                    using (var clipPath = RoundedRect(imageRect, 4))
+                    {
+                        g.SetClip(clipPath);
+                        g.DrawImage(img, imageRect);
+                        g.ResetClip();
+
+                        // Glass gradient overlay at the bottom of the image
+                        var gradientRect = new Rectangle(imageRect.Left, imageRect.Bottom - 20, imageRect.Width, 20);
+                        using (var gradBrush = new LinearGradientBrush(
+                            gradientRect,
+                            Color.FromArgb(0, bgColor),
+                            Color.FromArgb(160, bgColor),
+                            LinearGradientMode.Vertical))
+                        {
+                            g.FillRectangle(gradBrush, gradientRect);
+                        }
+                    }
+
+                    // Subtle image border
+                    using (var borderPen = new Pen(AppTheme.BorderSubtle))
+                    {
+                        using (var borderPath = RoundedRect(imageRect, 4))
+                        {
+                            g.DrawPath(borderPen, borderPath);
+                        }
+                    }
+                }
+            }
+
+            // 4. Game name text
+            int textX   = imageRect.Right + 10;
+            int textW   = bounds.Right - textX - 6;
+            var textRect = new Rectangle(textX, bounds.Top, textW, bounds.Height);
+
+            Color textColor = e.Item.Selected ? AppTheme.TextPrimary : AppTheme.TextPrimary;
+            using (var textBrush = new SolidBrush(textColor))
+            {
+                var format = new StringFormat
+                {
+                    Alignment     = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    Trimming      = StringTrimming.EllipsisCharacter,
+                    FormatFlags   = StringFormatFlags.NoWrap,
+                };
+                g.DrawString(e.Item.Text, AppTheme.FontSemibold, textBrush, textRect, format);
+            }
+
+            // 5. Thin bottom separator line
+            using (var separatorPen = new Pen(AppTheme.BorderSubtle))
+            {
+                g.DrawLine(separatorPen, bounds.Left, bounds.Bottom - 1, bounds.Right, bounds.Bottom - 1);
+            }
+        }
+
+        /// <summary>
+        /// Builds a GraphicsPath for a rectangle with uniformly rounded corners.
+        /// </summary>
+        private static GraphicsPath RoundedRect(Rectangle rect, int radius)
+        {
+            int d    = radius * 2;
+            var path = new GraphicsPath();
+            path.AddArc(rect.Left,            rect.Top,             d, d, 180, 90);
+            path.AddArc(rect.Right - d,       rect.Top,             d, d, 270, 90);
+            path.AddArc(rect.Right - d,       rect.Bottom - d,      d, d, 0,   90);
+            path.AddArc(rect.Left,            rect.Bottom - d,      d, d, 90,  90);
+            path.CloseFigure();
+            return path;
+        }
+
+        // ------------------------------------------------------------------ new UI event handlers
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
+
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        /// <summary>
+        /// Wires up acrylic blur after the window handle is created, and sets
+        /// placeholder cue text on the TextBox controls (net48 compat via EM_SETCUEBANNER).
+        /// </summary>
+        private void OnFormLoad(object sender, EventArgs e)
+        {
+            NativeBlur.EnableAcrylic(this);
+            SendMessage(this._AddGameTextBox.Handle,    EM_SETCUEBANNER, (IntPtr)1, "App ID");
+            SendMessage(this._SearchGameTextBox.Handle, EM_SETCUEBANNER, (IntPtr)1, "Search your library...");
+        }
+
+        /// <summary>
+        /// Paints a subtle violet-to-transparent gradient glow along the bottom
+        /// edge of the header panel, reinforcing the glass effect.
+        /// </summary>
+        private void OnHeaderPanelPaint(object sender, PaintEventArgs e)
+        {
+            var g      = e.Graphics;
+            var bounds = (sender as System.Windows.Forms.Control).ClientRectangle;
+
+            // Bottom edge separator line
+            using (var pen = new Pen(AppTheme.BorderSubtle))
+            {
+                g.DrawLine(pen, bounds.Left, bounds.Bottom - 1, bounds.Right, bounds.Bottom - 1);
+            }
+
+            // Violet glow strip — bottom 2px
+            using (var glow = new LinearGradientBrush(
+                new Rectangle(bounds.Left, bounds.Bottom - 2, bounds.Width, 2),
+                AppTheme.AccentGlow,
+                Color.Transparent,
+                LinearGradientMode.Horizontal))
+            {
+                g.FillRectangle(glow, bounds.Left, bounds.Bottom - 2, bounds.Width, 2);
+            }
+        }
+
+        /// <summary>
+        /// Paints the top separator line of the status footer.
+        /// </summary>
+        private void OnStatusPanelPaint(object sender, PaintEventArgs e)
+        {
+            var g      = e.Graphics;
+            var bounds = (sender as System.Windows.Forms.Control).ClientRectangle;
+            using (var pen = new Pen(AppTheme.BorderSubtle))
+            {
+                g.DrawLine(pen, bounds.Left, 0, bounds.Right, 0);
+            }
+        }
+
+        /// <summary>
+        /// Swallows the sub-item draw event — all rendering is done in DrawItem.
+        /// </summary>
+        private void OnGameListViewDrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            // Intentionally empty: DrawItem handles the entire row.
+        }
+
+        /// <summary>
+        /// Swallows the column-header draw event (header is hidden).
+        /// </summary>
+        private void OnGameListViewDrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            e.Graphics.FillRectangle(new SolidBrush(AppTheme.BgDeep), e.Bounds);
+        }
+
+        /// <summary>
+        /// Keeps the single phantom column as wide as the list view so each
+        /// item row spans the full client width.
+        /// </summary>
+        private void OnListViewSizeChanged(object sender, EventArgs e)
+        {
+            if (this._GameListView.Columns.Count > 0)
+            {
+                this._GameListView.Columns[0].Width = this._GameListView.ClientSize.Width;
             }
         }
     }
