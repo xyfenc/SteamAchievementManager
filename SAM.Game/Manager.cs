@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2024 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2024 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -24,11 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
+using SAM.Game.Theme;
 using static SAM.Game.InvariantShorthand;
 using APITypes = SAM.API.Types;
 
@@ -55,6 +57,9 @@ namespace SAM.Game
         public Manager(long gameId, API.Client client)
         {
             this.InitializeComponent();
+
+            // Apply the dark theme to the statistics DataGridView
+            DarkDataGridViewThemer.Apply(this._StatisticsDataGridView);
 
             this._MainTabControl.SelectedTab = this._AchievementsTabPage;
             //this.statisticsList.Enabled = this.checkBox1.Checked;
@@ -503,10 +508,13 @@ namespace SAM.Game
 
                 ListViewItem item = new()
                 {
-                    Checked = isAchieved,
-                    Tag = info,
-                    Text = info.Name,
-                    BackColor = (def.Permission & 3) == 0 ? Color.Black : Color.FromArgb(64, 0, 0),
+                    Checked   = isAchieved,
+                    Tag       = info,
+                    Text      = info.Name,
+                    BackColor = (def.Permission & 3) == 0
+                        ? AppTheme.RowUnlocked
+                        : AppTheme.RowRestricted,
+                    ForeColor = AppTheme.TextPrimary,
                 };
 
                 info.Item = item;
@@ -746,6 +754,46 @@ namespace SAM.Game
             }
         }
 
+        /// <summary>
+        /// Owner-draws tabs on the main TabControl with a dark background and
+        /// an accent-colored top border on the active tab.
+        /// </summary>
+        private void OnTabControlDrawItem(object sender, DrawItemEventArgs e)
+        {
+            var tab    = this._MainTabControl.TabPages[e.Index];
+            var g      = e.Graphics;
+            var bounds = e.Bounds;
+            bool isSelected = (e.State & DrawItemState.Selected) != 0;
+
+            // Background
+            Color bgColor = isSelected ? AppTheme.BgSurface : AppTheme.BgPanel;
+            using (var bgBrush = new SolidBrush(bgColor))
+            {
+                g.FillRectangle(bgBrush, bounds);
+            }
+
+            // Accent top border on active tab
+            if (isSelected)
+            {
+                using (var accentPen = new Pen(AppTheme.AccentPrimary, 2))
+                {
+                    g.DrawLine(accentPen, bounds.Left, bounds.Top + 1, bounds.Right - 1, bounds.Top + 1);
+                }
+            }
+
+            // Tab text
+            Color textColor = isSelected ? AppTheme.TextPrimary : AppTheme.TextSecondary;
+            using (var textBrush = new SolidBrush(textColor))
+            {
+                var format = new StringFormat
+                {
+                    Alignment     = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center,
+                };
+                g.DrawString(tab.Text, isSelected ? AppTheme.FontSemibold : AppTheme.FontBase, textBrush, bounds, format);
+            }
+        }
+
         private bool Store()
         {
             if (this._SteamClient.SteamUserStats.StoreStats() == false)
@@ -890,6 +938,17 @@ namespace SAM.Game
             }
         }
 
+        private void OnAchievementActivate(object sender, EventArgs e)
+        {
+            if (this._AchievementListView.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            var item = this._AchievementListView.SelectedItems[0];
+            item.Checked = !item.Checked;
+        }
+
         private void OnDisplayUncheckedOnly(object sender, EventArgs e)
         {
             if ((sender as ToolStripButton).Checked == true)
@@ -913,6 +972,54 @@ namespace SAM.Game
         private void OnFilterUpdate(object sender, KeyEventArgs e)
         {
             this.GetAchievements();
+        }
+
+        // ------------------------------------------------------------------ new Panel UI handlers
+
+        /// <summary>
+        /// Wires up acrylic blur-behind after the window handle is available.
+        /// </summary>
+        private void OnFormLoad(object sender, EventArgs e)
+        {
+            NativeBlur.EnableAcrylic(this);
+        }
+
+        /// <summary>
+        /// Paints a subtle gradient glow along the bottom edge of the header panel.
+        /// </summary>
+        private void OnHeaderPanelPaint(object sender, PaintEventArgs e)
+        {
+            var g      = e.Graphics;
+            var bounds = (sender as System.Windows.Forms.Control).ClientRectangle;
+
+            // Bottom separator
+            using (var pen = new Pen(AppTheme.BorderSubtle))
+            {
+                g.DrawLine(pen, bounds.Left, bounds.Bottom - 1, bounds.Right, bounds.Bottom - 1);
+            }
+
+            // Accent glow strip
+            using (var glow = new LinearGradientBrush(
+                new Rectangle(bounds.Left, bounds.Bottom - 2, bounds.Width, 2),
+                AppTheme.AccentGlow,
+                Color.Transparent,
+                LinearGradientMode.Horizontal))
+            {
+                g.FillRectangle(glow, bounds.Left, bounds.Bottom - 2, bounds.Width, 2);
+            }
+        }
+
+        /// <summary>
+        /// Paints the top separator line of the status footer.
+        /// </summary>
+        private void OnStatusPanelPaint(object sender, PaintEventArgs e)
+        {
+            var g      = e.Graphics;
+            var bounds = (sender as System.Windows.Forms.Control).ClientRectangle;
+            using (var pen = new Pen(AppTheme.BorderSubtle))
+            {
+                g.DrawLine(pen, bounds.Left, 0, bounds.Right, 0);
+            }
         }
     }
 }
